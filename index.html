@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Make Your Own Bar Chart!</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./styles.css">
+
+  </head>
+  <body>
+    <form id='chartform'>
+      Graph Title:<br>
+      <input type="text" name="graphTitle"><br>
+      Data:<br>
+      <input type="text" name="data"><br>
+      Data Labels:<br>
+      <input type="text" name="dataLabels"><br>
+      X-Axis:<br>
+      <input type="text" name="xAxis"><br>
+      Title Size:<br>
+      <input type="text" name="titleSize" value="30"><br>
+      Title Color:<br>
+      <input type="text" name="titleColor" value="black"><br>
+      Bar Color:<br>
+      <input type="text" name="barColor" value="wheat"><br>
+      Bar Spacing:<br>
+      <input type="text" name="barSpacing" value="10"><br>
+      Value Position:<br>
+      <input type="radio" name="valuePosition" value="flex-start" > Top<br>
+      <input type="radio" name="valuePosition" value="center" checked> Centre<br>
+      <input type="radio" name="valuePosition" value="flex-end"> Bottom<br><br>
+      <input type="submit" value="Submit">
+    </form>
+    <div id='graphbox-container'>
+      <h1>
+      </h1>
+      <div id='yTicks'>
+        <div class='eachTick'></div>
+        <div class='eachTick'></div>
+        <div class='eachTick'></div>
+        <div class='eachTick'></div>
+        <div class='eachTick'></div>
+        <div class='eachTick'></div>
+        <div class='eachTick'></div>
+        <div class='eachTick'></div>
+      </div>
+      <div id='graphbox'>
+      </div>
+      <div id='xValues'>
+      </div>
+      <div id='xAxis'>
+      </div>
+    </div>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      $("#chartform").submit(function(e) {
+        e.preventDefault();
+        let data = e.target.data.value.split(', ');
+        let dataLabels = e.target.dataLabels.value.split(', ');
+        let options = {};
+        options.titleSize = e.target.titleSize.value;
+        options.titleColor = e.target.titleColor.value;
+        options.barSpacing = e.target.barSpacing.value;
+        options.valuePosition = e.target.valuePosition.value;
+        options.barColor = e.target.barColor.value;
+        options.xAxis = e.target.xAxis.value;
+
+        let element = $('#graphbox');
+
+        let completeMarkup = '';
+        let tallestBar = 0;
+        data.forEach(function (num) {
+          if (Number(num) > tallestBar) { //finding the tallest bar
+            tallestBar = Number(num);
+          };
+        });
+        let barWidth = (400 / data.length); //calculating bar widths
+
+        data.forEach( function(num) { //using data values to create bars
+          let barHeight = (400 / tallestBar) * num; //calculating bar heights
+          completeMarkup += `<div class="bars" style="height: ${barHeight}px; width: ${barWidth}px; margin:0 ${options.barSpacing}px; align-items: ${options.valuePosition}">${num}</div>`;
+        });
+        $("#graphbox").html(completeMarkup);
+
+        $('h1').html(e.target.graphTitle.value); // input graph title
+        $('h1').css({ "font-size": `${options.titleSize}px`}); //changing title font size
+        $('h1').css({ "color": `${options.titleColor}`}); //changing title font size
+
+        $('.bars').css({ "background-color": `${options.barColor}`}); //changing bar colour
+
+        let xLabelMarkup = '';
+        dataLabels.forEach( function(val) { //adding x values
+          xLabelMarkup += `<div class="xLabels" style="width: ${barWidth}px; margin-right:0 ${options.barSpacing}px; align-items: ${options.valuePosition}">${val}</div>`;
+        });
+        $("#xValues").html(xLabelMarkup);
+
+        $('#xAxis').html(options.xAxis); //add x-axis label
+
+      });
+    </script>
+  </body>
+</html>
